@@ -3,7 +3,7 @@ from .schemas.sumary_data import SummaryData
 import solcx
 from web3 import Web3
 import json
-
+import os
 app = FastAPI()
 
 
@@ -35,10 +35,10 @@ async def write_data(data: SummaryData):
     abi = json.loads(compiled["contracts"]["device_data.sol"]
                      ["Information"]["metadata"])["output"]["abi"]
 
-    w3 = Web3(Web3.HTTPProvider("http://127.0.0.1:8545"))
-    chain_id = 1337
-    address = "0xb191ABe295943C6e575fd1eFb91Ec7bB8B43b085"
-    private_key = "0x462914dc9ae465d094b2e9fb28c5cb39f824e1e5a42ffa3a3ae71232baa2cd73"
+    w3 = Web3(Web3.HTTPProvider(os.getenv("ETHEREUM_HTTP_NODE")))
+    chain_id = os.getenv("ETHEREUM_CHAIN_ID")
+    address = os.getenv("ETHEREUM_ADDRESS")
+    private_key = os.getenv("ETHEREUM_PRIVATE_KEY")
 
     device_data = w3.eth.contract(abi=abi, bytecode=bytecode)
     nonce = w3.eth.get_transaction_count(address)
